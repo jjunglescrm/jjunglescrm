@@ -43,6 +43,7 @@ jobs:
           host: ${{ secrets.VULTR_IP }}
           username: ${{ secrets.VULTR_USERNAME }}
           key: ${{ secrets.VULTR_SSH_KEY }}
-        script: |
-          docker pull jjungles/jjungles-crm:latest
-          docker stack deploy -c /root/docker-compose.yml jjungles_stack
+          script: |
+            docker pull jjungles/jjungles-crm:latest
+            docker stack deploy -c /root/docker-compose.yml jjungles_stack
+
