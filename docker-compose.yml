@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  jjungles-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: jjungles
+      POSTGRES_PASSWORD: securepassword
+      POSTGRES_DB: jjungles_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - jjungles-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  jjungles-crm:
+    image: jjungles/jjungles-crm:latest  # Your custom CRM image from Docker Hub
+    ports:
+      - "8069:8069"  # Map the CRM port 8069 for access
+    environment:
+      HOST: jjungles-db  # Points to the DB service
+      USER: jjungles     # Database user
+      PASSWORD: securepassword  # Database password
+      DATABASE: jjungles_db  # Database name
+    networks:
+      - jjungles-network
+    depends_on:
+      - jjungles-db
+    deploy:
+      replicas: 3  # Running 3 replicas for load balancing
+      update_config:
+        parallelism: 1  # Ensures rolling updates
+        delay: 10s  # Delay between service updates
+      restart_policy:
+        condition: on-failure
+
+networks:
+  jjungles-network:
+    driver: overlay
+
+volumes:
+  db_data:
+    driver: local
