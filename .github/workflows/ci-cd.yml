@@ -32,6 +32,9 @@ jobs:
           push: true
           tags: jjungles/jjungles-crm:latest
 
+      - name: Debug SSH Key
+        run: echo "${{ secrets.VULTR_SSH_KEY }}" | wc -c
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
