@@ -1,0 +1,25 @@
+name: Deploy to Vultr
+
+# This section tells GitHub Actions when to trigger the workflow
+on:
+  push:
+    branches:
+      - main  # Trigger when code is pushed to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # This specifies the type of environment the job will run in
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Checks out your repository so it can be accessed in the workflow
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3  # Sets up SSH key for the deployment
+        with:
+          ssh-private-key: ${{ secrets.VULTR_SSH_KEY }}  # Use the SSH key stored in GitHub secrets
+
+      - name: Deploy to Vultr
+        run: |
+          echo "Deploying to Vultr..."
+          ssh -i ~/.ssh/id_rsa root@108.61.184.162 "cd /path/to/your/repository && git pull origin main && docker-compose up -d"  # Replace the path with your repo path
